@@ -4,7 +4,7 @@ namespace Bozboz\Ecommerce\Orders;
 
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Reports\Downloadable;
-use Bozboz\Ecommerce\Order\State as OrderState;
+use Bozboz\Ecommerce\Orders\State as OrderState;
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
 use Bozboz\Ecommerce\Orders\Customers\Customer;
 use Exception;
@@ -17,11 +17,18 @@ class Order extends Model
 
 	protected $paymentDataArray = null;
 
-	public $fillable = array('customer_email', 'customer_first_name', 'customer_last_name', 'customer_phone', 'company', 'state_id');
+	public $fillable = [
+		'customer_email',
+		'customer_first_name',
+		'customer_last_name',
+		'customer_phone',
+		'company',
+		'state_id',
+	];
 
 	public function state()
 	{
-		return $this->belongsTo(State::class);
+		return $this->belongsTo(OrderState::class);
 	}
 
 	public function items()
@@ -122,11 +129,11 @@ class Order extends Model
 	 */
 	public function isTaxable()
 	{
-		$shippingCountry = $this->shippingAddress()->pluck('country');
+		$shippingCountry = $this->shippingAddress()->value('country');
 		if ($shippingCountry) {
 			$shippingRegion = $this->getConnection()->table('countries')
 				->whereCode($shippingCountry)
-				->pluck('region');
+				->value('region');
 			return $shippingRegion === 'EU';
 		} else {
 			return true;

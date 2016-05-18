@@ -2,6 +2,7 @@
 
 namespace Bozboz\Ecommerce\Orders\Cart;
 
+use Bozboz\Ecommerce\Orders\Cart\CartStorageInterface;
 use Illuminate\Session\Store as Session;
 
 class SessionStorage implements CartStorageInterface

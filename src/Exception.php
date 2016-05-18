@@ -2,7 +2,7 @@
 
 namespace Bozboz\Ecommerce\Orders;
 
-use Illuminate\Support\Contracts\MessageProviderInterface;
+use Illuminate\Validation\Validator;
 
 class Exception extends \Exception
 {
@@ -11,7 +11,7 @@ class Exception extends \Exception
 	/**
 	 * @param  Illuminate\Support\Contracts\MessageProviderInterface $validator
 	 */
-	public function __construct(MessageProviderInterface $validator)
+	public function __construct(Validator $validator)
 	{
 		$this->validator = $validator;
 	}

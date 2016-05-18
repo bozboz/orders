@@ -1,8 +1,8 @@
 <?php
 
-namespace Bozboz\Ecommerce\Orders\Cart\Contracts;
+namespace Bozboz\Ecommerce\Orders\Cart;
 
-interface CartStorage
+interface CartStorageInterface
 {
 	/**
 	 * Retrieve Cart instance

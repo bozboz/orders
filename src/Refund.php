@@ -1,4 +1,6 @@
-<?php namespace Bozboz\Ecommerce\Order;
+<?php
+
+namespace Bozboz\Ecommerce\Orders;
 
 use Bozboz\Ecommerce\Payment\Exception;
 use Bozboz\Ecommerce\Payment\GatewayFactory;
