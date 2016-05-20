@@ -2,7 +2,7 @@
 
 namespace Bozboz\Ecommerce\Orders;
 
-use Illuminate\Database\Eloquent\Model;
+use Bozboz\Admin\Base\Model;
 
 class State extends Model
 {

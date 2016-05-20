@@ -7,12 +7,16 @@ use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Reports\Downloadable;
 use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
+use Bozboz\Admin\Reports\Filters\RelationFilter;
 use Bozboz\Admin\Reports\Filters\SearchListingFilter;
 use Bozboz\Ecommerce\Orders\ListingFilters\DateFilter;
+use Bozboz\Ecommerce\Orders\StateDecorator;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrderDecorator extends ModelAdminDecorator implements Downloadable
 {
+	private $orderStates;
+
 	const TODAY = 1;
 	const THIS_WEEK = 2;
 	const THIS_MONTH = 3;
@@ -20,15 +24,16 @@ class OrderDecorator extends ModelAdminDecorator implements Downloadable
 	const PAST_MONTH = 5;
 	const PAST_QUARTER = 6;
 
-	public function __construct(Order $model)
+	public function __construct(Order $model, StateDecorator $orderStates)
 	{
 		parent::__construct($model);
+		$this->orderStates = $orderStates;
 	}
 
 	public function getColumns($order)
 	{
 		return array(
-			'ID' => sprintf('<span class="id">#%s</span>', str_pad($order->id, 3, '0', STR_PAD_LEFT)),
+			'ID' => sprintf('<strong class="id">#%s</strong>', str_pad($order->id, 3, '0', STR_PAD_LEFT)),
 			'Customer' => $order->customer_first_name . ' ' . $order->customer_last_name,
 			'Country' => $order->billingAddress ? $order->billingAddress->country : '-',
 			'Date' => $order->created_at,
@@ -58,7 +63,7 @@ class OrderDecorator extends ModelAdminDecorator implements Downloadable
 	{
 		return [
 			new DateFilter,
-			new ArrayListingFilter('state', $this->getStateOptions(), 'state_id', 3),
+			new RelationFilter($this->model->state(), $this->orderStates),
 			new SearchListingFilter('customer', [], function($q, $value) {
 				foreach(explode(' ', $value) as $part) {
 					$q->where(function($q) use ($part) {
