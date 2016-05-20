@@ -29,6 +29,8 @@ class OrderServiceProvider extends ServiceProvider
             "{$packageRoot}/database/migrations/" => database_path('migrations')
         ], 'migrations');
 
+        require("$packageRoot/helpers.php");
+
         $this->loadViewsFrom("{$packageRoot}/resources/views/", 'orders');
 
         $this->loadTranslationsFrom("{$packageRoot}", 'products');
