@@ -97,26 +97,26 @@
 	</div>
 
 	<div class="addresses">
-		<div class="billing">
-			<h3>Billing Address</h3>
-			@if ($model->billingAddress)
+		@if ($model->billingAddress)
+			<div class="billing">
+				<h3>Billing Address</h3>
 				@foreach($model->billingAddress->parts() as $value)
 					@if ($value)
 						{{ $value }}<br>
 					@endif
 				@endforeach
-			@endif
-		</div>
-		<div class="shipping">
-			<h3>Shipping Address</h3>
-			@if ($model->shippingAddress)
+			</div>
+		@endif
+		@if ($model->shippingAddress)
+			<div class="shipping">
+				<h3>Shipping Address</h3>
 				@foreach($model->shippingAddress->parts() as $value)
 					@if ($value)
 						{{ $value }}<br>
 					@endif
 				@endforeach
-			@endif
-		</div>
+			</div>
+		@endif
 	</div>
 
 	<div class="form-row">
