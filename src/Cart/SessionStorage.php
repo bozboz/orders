@@ -35,13 +35,13 @@ class SessionStorage implements CartStorageInterface
 	public function getOrCreateCart()
 	{
 		$cart = null;
-
 		if ($this->session->has('cart')) {
 			$cart = $this->getCart();
 		}
 
 		if ( ! $cart) {
 			$cart = Cart::create(['state_id' => 1]);
+
 			$this->session->put('cart', $cart->getKey());
 		}
 
