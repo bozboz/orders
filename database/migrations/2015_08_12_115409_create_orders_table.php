@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration {
 			$table->increments('id');
 			$table->string('transaction_id')->nullable();
 			$table->integer('state_id')->unsigned();
+			$table->string('checkout_progress')->nullable();
 			$table->string('customer_email');
 			$table->string('customer_first_name');
 			$table->string('customer_last_name');
