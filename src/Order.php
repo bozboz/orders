@@ -4,10 +4,11 @@ namespace Bozboz\Ecommerce\Orders;
 
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Reports\Downloadable;
-use Bozboz\Ecommerce\Orders\State as OrderState;
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
 use Bozboz\Ecommerce\Orders\Customers\Customer;
+use Bozboz\Ecommerce\Orders\State as OrderState;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Config;
 
@@ -164,6 +165,17 @@ class Order extends Model
 		return $item;
 	}
 
+	public function getCompletedScreen()
+	{
+		return $this->checkout_progress;
+	}
+
+	public function markScreenAsComplete($screenAlias)
+	{
+		$this->checkout_progress = $screenAlias;
+		$this->save();
+	}
+
 	/**
 	 * Change state of order to a state matching the given $state string
 	 *
@@ -173,7 +185,7 @@ class Order extends Model
 	 */
 	public function changeState($state)
 	{
-		$orderState = OrderState::whereName($state)->firstOrFail();
+		$orderState = OrderState::whereName($state)->first();
 		$this->state()->associate($orderState);
 		$this->save();
 	}
@@ -185,7 +197,11 @@ class Order extends Model
 	 */
 	public function setStateIdAttribute($id)
 	{
-		$state = OrderState::findOrFail($id);
+		$state = OrderState::find($id);
+
+		if (!$state) {
+			throw new ModelNotFoundException('Invalid state ID');
+		}
 
 		$this->attributes['state_id'] = $id;
 
