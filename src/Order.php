@@ -6,15 +6,22 @@ use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Reports\Downloadable;
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
 use Bozboz\Ecommerce\Orders\Customers\Customer;
+use Bozboz\Ecommerce\Orders\OrderStateException;
 use Bozboz\Ecommerce\Orders\State as OrderState;
 use Exception;
+use Finite\Loader\ArrayLoader;
+use Finite\StateMachine\StateMachine;
+use Finite\StatefulInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Config;
 
-class Order extends Model
+class Order extends Model implements StatefulInterface
 {
 	use SoftDeletes;
+
+	private $stateMachine;
+	// private $state;
 
 	protected $paymentDataArray = null;
 
@@ -24,12 +31,80 @@ class Order extends Model
 		'customer_last_name',
 		'customer_phone',
 		'company',
-		'state_id',
+		'state',
 	];
 
-	public function state()
+	public function __construct($attributes = [])
 	{
-		return $this->belongsTo(OrderState::class);
+		parent::__construct($attributes);
+		$this->initializeStateMachine();
+	}
+
+	protected function initializeStateMachine()
+	{
+		$stateMachine = new StateMachine;
+		$loader = new ArrayLoader([
+			'class' => static::class,
+			'states' => config('orders.finite_state.states'),
+			'transitions' => config('orders.finite_state.transitions'),
+		]);
+
+		$loader->load($stateMachine);
+		$stateMachine->setObject($this);
+		$stateMachine->initialize();
+
+		$this->stateMachine = $stateMachine;
+	}
+
+	public function setFiniteState($state)
+	{
+		$this->attributes['state'] = $state;
+	}
+
+	public function getFiniteState()
+	{
+		if (array_key_exists('state', $this->attributes)) {
+			return $this->attributes['state'];
+		}
+	}
+
+	public function setStateAttribute($state)
+	{
+		throw new \Exception('Attempting to override order state directly');
+	}
+
+	public function getStateMachine()
+	{
+		if ( ! $this->stateMachine) {
+			$this->initializeStateMachine();
+		}
+		return $this->stateMachine;
+	}
+
+	public function newFromBuilder($attributes = [], $connection = null)
+	{
+		$instance = parent::newFromBuilder($attributes, $connection);
+		$instance->getStateMachine()->initialize();
+		return $instance;
+	}
+
+	/**
+	 * Transition the order state using the given $transition string
+	 *
+	 * @param  string  $transition
+	 * @return void
+	 * @throws Bozboz\Ecommerce\Orders\OrderStateException
+	 */
+	public function transitionState($transition)
+	{
+		$this->stateMachine->apply($transition);
+		$this->attributes['state'] = $this->getFiniteState();
+		$this->save();
+	}
+
+	public function canTransition($transition)
+	{
+		return $this->stateMachine->can($transition);
 	}
 
 	public function items()
@@ -165,47 +240,15 @@ class Order extends Model
 		return $item;
 	}
 
-	public function getCompletedScreen()
+	public function getCheckoutProgress()
 	{
 		return $this->checkout_progress;
 	}
 
-	public function markScreenAsComplete($screenAlias)
+	public function updateCheckoutProgress($screenAlias)
 	{
 		$this->checkout_progress = $screenAlias;
 		$this->save();
-	}
-
-	/**
-	 * Change state of order to a state matching the given $state string
-	 *
-	 * @param  string  $state
-	 * @return void
-	 * @throws Illuminate\Database\Eloquent\ModelNotFoundException
-	 */
-	public function changeState($state)
-	{
-		$orderState = OrderState::whereName($state)->first();
-		$this->state()->associate($orderState);
-		$this->save();
-	}
-
-	/**
-	 * Fire an event when an order state changes
-	 *
-	 * @param  int  $id
-	 */
-	public function setStateIdAttribute($id)
-	{
-		$state = OrderState::find($id);
-
-		if (!$state) {
-			throw new ModelNotFoundException('Invalid state ID');
-		}
-
-		$this->attributes['state_id'] = $id;
-
-		static::$dispatcher->fire($state->getEventFriendlyName(), $this);
 	}
 
 	/**

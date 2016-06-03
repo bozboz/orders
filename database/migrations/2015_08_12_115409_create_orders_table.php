@@ -17,8 +17,8 @@ class CreateOrdersTable extends Migration {
 			$table->engine = 'InnoDB';
 
 			$table->increments('id');
-			$table->string('transaction_id')->nullable();
-			$table->integer('state_id')->unsigned();
+			$table->string('transaction_id')->nullable()->index();
+			$table->string('state')->index();
 			$table->string('checkout_progress')->nullable();
 			$table->string('customer_email');
 			$table->string('customer_first_name');

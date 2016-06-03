@@ -23,7 +23,6 @@ class AddForeignKeyConstraints extends Migration {
 			 */
 			Schema::table('orders', function(Blueprint $table)
 			{
-				$table->foreign('state_id')->references('id')->on('order_states')->onDelete('restrict');
 				$table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 				$table->foreign('shipping_address_id')->references('id')->on('addresses')->onDelete('restrict');
 				$table->foreign('billing_address_id')->references('id')->on('addresses')->onDelete('restrict');
@@ -58,7 +57,6 @@ class AddForeignKeyConstraints extends Migration {
 	{
 		Schema::table('orders', function(Blueprint $table)
 		{
-			$table->dropForeign('orders_state_id_foreign');
 			$table->dropForeign('orders_user_id_foreign');
 			$table->dropForeign('orders_shipping_address_id_foreign');
 			$table->dropForeign('orders_billing_address_id_foreign');

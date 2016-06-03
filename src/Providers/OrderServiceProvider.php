@@ -26,15 +26,18 @@ class OrderServiceProvider extends ServiceProvider
         $packageRoot = __DIR__ . '/../..';
 
         $this->publishes([
-            "{$packageRoot}/database/migrations/" => database_path('migrations'),
-            "$packageRoot/resources/views/" => base_path('resources/views/vendor/orders')
+            "$packageRoot/database/migrations/" => database_path('migrations'),
+            "$packageRoot/resources/views/" => base_path('resources/views/vendor/orders'),
+            "$packageRoot/config/orders.php" => config_path('orders.php'),
         ]);
 
         require("$packageRoot/helpers.php");
 
-        $this->loadViewsFrom("{$packageRoot}/resources/views/", 'orders');
+        $this->mergeConfigFrom(
+            "$packageRoot/config/default.php", 'orders'
+        );
 
-        $this->loadTranslationsFrom("{$packageRoot}", 'products');
+        $this->loadViewsFrom("$packageRoot/resources/views/", 'orders');
 
         $this->app['view']->composer(
             'orders::cart.summary', 'Bozboz\Ecommerce\Orders\Cart\CartComposer'

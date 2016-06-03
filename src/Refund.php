@@ -51,7 +51,7 @@ class Refund
 			throw new Exception($msg);
 		}
 
-		$newOrder->changeState('Refunded');
+		$newOrder->transitionState('refund');
 
 		foreach($newOrder->items()->get() as $item) {
 			$this->events->fire('item.refunded: ' . $item->orderable_type, $item);

@@ -51,7 +51,7 @@
 						@endforeach
 					</td>
 					<td>{{ format_money($order->totalPrice()) }}</td>
-					<td style="text-align: left">{{ $order->state->name }}</td>
+					<td style="text-align: left">{{ $order->getFiniteState() }}</td>
 				</tr>
 			@endforeach
 		</tbody>
