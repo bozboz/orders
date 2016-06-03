@@ -12,7 +12,7 @@ return [
         'transitions' => [
             'checkout' => ['from' => ['cart'],    'to' => 'checkout'],
             'cart' => ['from' => ['checkout'],    'to' => 'cart'],
-            'complete'  => ['from' => ['checkout'], 'to' => 'complete'],
+            'complete'  => ['from' => ['checkout'], 'to' => 'completed'],
             'fail'  => ['from' => ['checkout'], 'to' => 'fail'],
             'pending'  => ['from' => ['checkout'], 'to' => 'pending'],
         ]
