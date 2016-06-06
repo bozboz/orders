@@ -10,7 +10,6 @@ use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
 use Bozboz\Admin\Reports\Filters\RelationFilter;
 use Bozboz\Admin\Reports\Filters\SearchListingFilter;
 use Bozboz\Ecommerce\Orders\ListingFilters\DateFilter;
-use Bozboz\Ecommerce\Orders\StateDecorator;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrderDecorator extends ModelAdminDecorator implements Downloadable
@@ -24,10 +23,9 @@ class OrderDecorator extends ModelAdminDecorator implements Downloadable
 	const PAST_MONTH = 5;
 	const PAST_QUARTER = 6;
 
-	public function __construct(Order $model, StateDecorator $orderStates)
+	public function __construct(Order $model)
 	{
 		parent::__construct($model);
-		$this->orderStates = $orderStates;
 	}
 
 	public function getColumns($order)
@@ -63,7 +61,7 @@ class OrderDecorator extends ModelAdminDecorator implements Downloadable
 	{
 		return [
 			new DateFilter,
-			new RelationFilter($this->model->state(), $this->orderStates),
+			new ArrayListingFilter('state', $this->getStateOptions()),
 			new SearchListingFilter('customer', [], function($q, $value) {
 				foreach(explode(' ', $value) as $part) {
 					$q->where(function($q) use ($part) {
@@ -78,7 +76,9 @@ class OrderDecorator extends ModelAdminDecorator implements Downloadable
 
 	protected function getStateOptions()
 	{
-		return [null => 'All'] + State::pluck('name', 'id')->all();
+		$states = $this->model->getStateMachine()->getStates();
+
+		return [null => 'All'] + array_combine($states, $states);
 	}
 
 	public function getLabel($model)

@@ -22,9 +22,10 @@ class CustomerController extends ModelAdminController
 
 		$view->with('addresses', $view->model->addresses);
 
-		$view->with('orderHistory', $view->model->orders()->whereHas('state', function($q) {
-			$q->where('state_id', '>', 2);
-		})->with('items.orderable')->latest()->get());
+		$view->with(
+			'orderHistory',
+			$view->model->orders()->complete()->with('items.orderable')->latest()->get()
+		);
 
 		return $view;
 	}

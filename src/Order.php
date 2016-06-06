@@ -7,21 +7,19 @@ use Bozboz\Admin\Reports\Downloadable;
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
 use Bozboz\Ecommerce\Orders\Customers\Customer;
 use Bozboz\Ecommerce\Orders\OrderStateException;
-use Bozboz\Ecommerce\Orders\State as OrderState;
 use Exception;
 use Finite\Loader\ArrayLoader;
 use Finite\StateMachine\StateMachine;
 use Finite\StatefulInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Config;
 
 class Order extends Model implements StatefulInterface
 {
 	use SoftDeletes;
 
 	private $stateMachine;
-	// private $state;
+
+	protected $table = 'orders';
 
 	protected $paymentDataArray = null;
 
@@ -43,11 +41,12 @@ class Order extends Model implements StatefulInterface
 	protected function initializeStateMachine()
 	{
 		$stateMachine = new StateMachine;
-		$loader = new ArrayLoader([
-			'class' => static::class,
-			'states' => config('orders.finite_state.states'),
-			'transitions' => config('orders.finite_state.transitions'),
-		]);
+		$loader = new ArrayLoader(array_merge(
+			[
+				'class' => static::class,
+			],
+			config('orders.finite_state')
+		));
 
 		$loader->load($stateMachine);
 		$stateMachine->setObject($this);
@@ -81,6 +80,11 @@ class Order extends Model implements StatefulInterface
 		return $this->stateMachine;
 	}
 
+	public function getFinalStates()
+	{
+		return $this->getStateMachine()->findStateWithProperty('user_complete', true);
+	}
+
 	public function newFromBuilder($attributes = [], $connection = null)
 	{
 		$instance = parent::newFromBuilder($attributes, $connection);
@@ -105,6 +109,16 @@ class Order extends Model implements StatefulInterface
 	public function canTransition($transition)
 	{
 		return $this->stateMachine->can($transition);
+	}
+
+	public function isComplete()
+	{
+		return $this->getStateMachine()->getCurrentState()->isFinal();
+	}
+
+	public function scopeComplete($query)
+	{
+		$query->whereIn('state', $this->getFinalStates());
 	}
 
 	public function items()
@@ -238,17 +252,6 @@ class Order extends Model implements StatefulInterface
 		$orderable->items()->save($item);
 
 		return $item;
-	}
-
-	public function getCheckoutProgress()
-	{
-		return $this->checkout_progress;
-	}
-
-	public function updateCheckoutProgress($screenAlias)
-	{
-		$this->checkout_progress = $screenAlias;
-		$this->save();
 	}
 
 	/**

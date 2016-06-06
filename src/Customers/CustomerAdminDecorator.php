@@ -33,9 +33,7 @@ class CustomerAdminDecorator extends UserAdminDecorator
 
 	protected function getLastOrder($customer)
 	{
-		$order = $customer->orders()->whereHas('state', function($q) {
-			$q->whereName('Completed');
-		})->latest()->first();
+		$order = $customer->orders()->complete()->latest()->first();
 
 		return $order ? $order->created_at->diffForHumans() : '-';
 	}
@@ -60,7 +58,7 @@ class CustomerAdminDecorator extends UserAdminDecorator
 		return [
 			new TextField('first_name'),
 			new TextField('last_name'),
-			new EmailField('email')
+			new EmailField('email'),
 		];
 	}
 }

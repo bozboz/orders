@@ -6,7 +6,7 @@ use Bozboz\Ecommerce\Orders\Order;
 
 use Bozboz\Ecommerce\Checkout\ValidationException;
 
-use Illuminate\Auth\UserInterface;
+use Bozboz\Admin\Users\UserInterface;
 use Illuminate\Validation\Factory as Validator;
 
 class CustomerService
@@ -27,7 +27,7 @@ class CustomerService
 	 * Store customer details on order from the given $user instance
 	 *
 	 * @param  Bozboz\Ecommerce\Order\Order  $order
-	 * @param  Illuminate\Auth\UserInterface  $user
+	 * @param  Bozboz\Admin\Users\UserInterface  $user
 	 * @return void
 	 */
 	public function storeUserDetailsOnOrder(Order $order, UserInterface $user)
