@@ -8,7 +8,7 @@ use Illuminate\Support\ServiceProvider;
 class OrderServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        'order.completed' => [
+        'Bozboz\Ecommerce\Orders\Events\OrderComplete' => [
             'Bozboz\Ecommerce\Orders\Customers\Addresses\LinkAddressToCustomer',
         ],
     ];

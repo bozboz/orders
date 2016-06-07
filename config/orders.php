@@ -5,15 +5,15 @@ return [
         'states' => [
             'cart'    => ['type' => 'initial', 'properties' => []],
             'checkout' => ['type' => 'normal',  'properties' => []],
-            'completed' => ['type' => 'final',   'properties' => []],
-            'failed'  => ['type' => 'final',   'properties' => []],
-            'pending'  => ['type' => 'final',   'properties' => []],
+            'successful' => ['type' => 'final',   'properties' => ['user_complete' => true]],
+            'failed'  => ['type' => 'final',   'properties' => ['user_complete' => true]],
+            'pending'  => ['type' => 'final',   'properties' => ['user_complete' => true]],
         ],
         'transitions' => [
             'checkout' => ['from' => ['cart'],    'to' => 'checkout'],
             'cart' => ['from' => ['checkout'],    'to' => 'cart'],
-            'complete'  => ['from' => ['checkout'], 'to' => 'completed'],
-            'fail'  => ['from' => ['checkout'], 'to' => 'fail'],
+            'sucess'  => ['from' => ['checkout'], 'to' => 'successful'],
+            'fail'  => ['from' => ['checkout'], 'to' => 'failed'],
             'pending'  => ['from' => ['checkout'], 'to' => 'pending'],
         ]
     ],

@@ -6,6 +6,7 @@ use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Reports\Downloadable;
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
 use Bozboz\Ecommerce\Orders\Customers\Customer;
+use Bozboz\Ecommerce\Orders\Events\OrderComplete;
 use Bozboz\Ecommerce\Orders\OrderStateException;
 use Exception;
 use Finite\Loader\ArrayLoader;
@@ -149,11 +150,6 @@ class Order extends Model implements StatefulInterface
 	public function relatedOrders()
 	{
 		return $this->hasMany(Order::class, 'parent_order_id');
-	}
-
-	public function scopeCompleted($query)
-	{
-		$query->whereStateId(3);
 	}
 
 	/**

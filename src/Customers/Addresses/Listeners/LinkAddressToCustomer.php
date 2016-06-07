@@ -3,7 +3,7 @@
 namespace Bozboz\Ecommerce\Orders\Customers\Addresses\Listeners;
 
 use Bozboz\Ecommerce\Orders\Customers\Customer;
-use Bozboz\Ecommerce\Orders\Order;
+use Bozboz\Ecommerce\Orders\Events\OrderComplete;
 
 class LinkAddressToCustomer
 {
@@ -14,8 +14,10 @@ class LinkAddressToCustomer
 	 * @param  Bozboz\Ecommerce\Order\Order  $order
 	 * @return void
 	 */
-	public function handle(Order $order)
+	public function handle(OrderComplete $event)
 	{
+		$order = $event->order;
+
 		$user = $order->user;
 
 		if ( ! $user) return false;
