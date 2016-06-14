@@ -93,7 +93,7 @@ class OrderDecorator extends ModelAdminDecorator implements Downloadable
 	public function getFields($instance)
 	{
 		return [
-			new SelectField(array('name' => 'state_id', 'label' => 'Order State', 'options' => $this->model->state()->getRelated()->pluck('name', 'id')->all())),
+			new SelectField(array('name' => 'state', 'label' => 'Order State', 'options' => $this->getStateOptions())),
 			new TextField(array('name' => 'customer_first_name', 'disabled' => true)),
 			new TextField(array('name' => 'customer_last_name', 'disabled' => true)),
 			new TextField(array('name' => 'customer_email', 'disabled' => true))
