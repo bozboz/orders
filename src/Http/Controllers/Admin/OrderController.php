@@ -55,7 +55,7 @@ class OrderController extends ModelAdminController
 			$this->actions->finite_state(
 				$items->map(function($item) {
 					return $this->actions->custom(
-						new Form([$this->getActionName('transitionState'), ['transition' => $item]], $item),
+						new Form([$this->getActionName('transitionState'), ['transition' => $item]], ucwords($item)),
 						new CanTransition([$this, 'canEdit'], $item)
 					);
 				})
