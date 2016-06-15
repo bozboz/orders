@@ -39,6 +39,12 @@ class OrderDecorator extends ModelAdminDecorator implements Downloadable
 		);
 	}
 
+	public function getStateTransitions()
+	{
+		$stateMachine = $this->model->getStateMachine();
+		return collect($stateMachine->getTransitions());
+	}
+
 	public function getColumnsForCSV($order)
 	{
 		return [

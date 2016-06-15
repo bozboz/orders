@@ -4,8 +4,10 @@ namespace Bozboz\Ecommerce\Orders\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Actions\Action;
+use Bozboz\Admin\Reports\Actions\Presenters\Form;
 use Bozboz\Admin\Reports\CSVReport;
 use Bozboz\Admin\Reports\Report;
+use Bozboz\Ecommerce\Orders\Actions\Permissions\CanTransition;
 use Bozboz\Ecommerce\Orders\OrderDecorator;
 use Bozboz\Ecommerce\Orders\Refund;
 use Bozboz\Ecommerce\Payment\Exception as PaymentException;
@@ -28,20 +30,37 @@ class OrderController extends ModelAdminController
 		parent::__construct($decorator);
 	}
 
-	// public function index()
-	// {
-	// 	$report = new Report($this->decorator, 'orders::admin.overview');
-	// 	return $report->render(array(
-	// 		'controller' => get_class($this),
-	// 		'canCreate' => false
-	// 	));
-	// }
-
 	protected function getReportActions()
 	{
 		return [
 			// '@downloadCsv'
 		];
+	}
+
+	public function transitionState($id, $transition)
+	{
+		$instance = $this->decorator->findInstance($id);
+		$instance->transitionState($transition);
+
+		return $this->getUpdateResponse($instance)->with('model.updated', sprintf(
+			'Successfully updated "%s"',
+			$this->decorator->getLabel($instance)
+		));
+	}
+
+	public function getRowActions()
+	{
+		$items = collect($this->decorator->getStateTransitions());
+		return array_merge([
+			$this->actions->finite_state(
+				$items->map(function($item) {
+					return $this->actions->custom(
+						new Form([$this->getActionName('transitionState'), ['transition' => $item]], $item),
+						new CanTransition([$this, 'canEdit'], $item)
+					);
+				})
+			),
+		], parent::getRowActions());
 	}
 
 	public function refund($orderId)

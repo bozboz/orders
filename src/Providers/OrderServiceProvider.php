@@ -2,6 +2,7 @@
 
 namespace Bozboz\Ecommerce\Orders\Providers;
 
+use Bozboz\Ecommerce\Orders\Actions\FiniteState;
 use Bozboz\Ecommerce\Orders\Cart\Cart;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,5 +43,16 @@ class OrderServiceProvider extends ServiceProvider
         $this->app['view']->composer(
             'orders::cart.summary', 'Bozboz\Ecommerce\Orders\Cart\CartComposer'
         );
+
+        $this->registerActions();
+    }
+
+    protected function registerActions()
+    {
+        $actions = $this->app['admin.actions'];
+
+        $actions->register('finite_state', function($items) {
+            return new FiniteState($items);
+        });
     }
 }
