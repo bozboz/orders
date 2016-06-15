@@ -80,4 +80,12 @@ interface Orderable
 	 * @return boolean
 	 */
 	public function isTaxable();
+
+	/**
+	 * Perform any actions necessary upon successful purchase
+	 *
+	 * @param  int $quantity
+	 * @return void
+	 */
+	public function purchased($quantity);
 }
