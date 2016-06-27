@@ -4,13 +4,17 @@ namespace Bozboz\Ecommerce\Orders\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Actions\Action;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Admin\Reports\CSVReport;
 use Bozboz\Admin\Reports\Report;
 use Bozboz\Ecommerce\Orders\Actions\Permissions\CanTransition;
+use Bozboz\Ecommerce\Orders\Events\OrderStateTransition;
 use Bozboz\Ecommerce\Orders\OrderDecorator;
 use Bozboz\Ecommerce\Orders\Refund;
 use Bozboz\Ecommerce\Payment\Exception as PaymentException;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
@@ -33,14 +37,24 @@ class OrderController extends ModelAdminController
 	protected function getReportActions()
 	{
 		return [
-			// '@downloadCsv'
+			$this->actions->custom(
+				new Link(
+					$this->getActionName('downloadCsv'),
+					'Download CSV',
+					'fa fa-download',
+					['class' => 'btn-primary pull-right']
+				),
+				new IsValid([$this, 'canView'])
+			),
 		];
 	}
 
-	public function transitionState($id, $transition)
+	public function transitionState(Dispatcher $event, $id, $transition)
 	{
 		$instance = $this->decorator->findInstance($id);
 		$instance->transitionState($transition);
+
+		\Event::fire(new OrderStateTransition($instance, $transition));
 
 		return $this->getUpdateResponse($instance)->with('model.updated', sprintf(
 			'Successfully updated "%s"',

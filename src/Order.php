@@ -39,6 +39,15 @@ class Order extends Model implements StatefulInterface
 		$this->initializeStateMachine();
 	}
 
+	static public function boot()
+	{
+		parent::boot();
+
+		\Event::listen('Bozboz\Ecommerce\Orders\Events\OrderStateTransition', function($event) {
+			app('Bozboz\Ecommerce\Orders\Listeners\Notify')->handle($event);
+		});
+	}
+
 	protected function initializeStateMachine()
 	{
 		$stateMachine = new StateMachine;

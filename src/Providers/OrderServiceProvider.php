@@ -12,6 +12,9 @@ class OrderServiceProvider extends ServiceProvider
         'Bozboz\Ecommerce\Orders\Events\OrderComplete' => [
             'Bozboz\Ecommerce\Orders\Customers\Addresses\LinkAddressToCustomer',
         ],
+        'Bozboz\Ecommerce\Orders\Events\OrderStateTransition' => [
+            'Bozboz\Ecommerce\Orders\Listeners\Notify',
+        ],
     ];
 
     protected $subscribe = [
