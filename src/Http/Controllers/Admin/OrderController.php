@@ -2,7 +2,7 @@
 
 namespace Bozboz\Ecommerce\Orders\Http\Controllers\Admin;
 
-use Bozboz\Admin\Http\Controllers\ModelAdminController;
+use Bozboz\Admin\Http\Controllers\BulkAdminController;
 use Bozboz\Admin\Reports\Actions\Action;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 
-class OrderController extends ModelAdminController
+class OrderController extends BulkAdminController
 {
 	protected $useActions = true;
 
@@ -37,6 +37,16 @@ class OrderController extends ModelAdminController
 	protected function getReportActions()
 	{
 		return [
+			$this->actions->custom(
+				new Form(
+					$this->getActionName('bulkEdit'),
+					'Bulk Update',
+					'fa fa-pencil',
+					['class' => 'btn-info'],
+					['class' => 'pull-right space-left js-bulk-update']
+				),
+				new IsValid([$this, 'canView'])
+			),
 			$this->actions->custom(
 				new Link(
 					$this->getActionName('downloadCsv'),

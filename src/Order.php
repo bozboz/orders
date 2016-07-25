@@ -77,11 +77,6 @@ class Order extends Model implements StatefulInterface
 		}
 	}
 
-	public function setStateAttribute($state)
-	{
-		throw new \Exception('Attempting to override order state directly');
-	}
-
 	public function getStateMachine()
 	{
 		if ( ! $this->stateMachine) {
@@ -355,15 +350,13 @@ class Order extends Model implements StatefulInterface
 	}
 
 	/**
-	 * Populate a new transaction ID on the order, in format:
-	 *
-	 *     c<id>-<timestamp>
+	 * Populate a new transaction ID on the order
 	 *
 	 * @return void
 	 */
 	public function generateTransactionId()
 	{
-		$this->transaction_id = 'i' . $this->id . '-' . time();
+		$this->transaction_id = time();
 	}
 
 	/**

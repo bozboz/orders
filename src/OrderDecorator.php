@@ -2,7 +2,7 @@
 
 namespace Bozboz\Ecommerce\Orders;
 
-use Bozboz\Admin\Base\ModelAdminDecorator;
+use Bozboz\Admin\Base\BulkAdminDecorator;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Reports\Downloadable;
@@ -12,7 +12,7 @@ use Bozboz\Admin\Reports\Filters\SearchListingFilter;
 use Bozboz\Ecommerce\Orders\ListingFilters\DateFilter;
 use Illuminate\Database\Eloquent\Builder;
 
-class OrderDecorator extends ModelAdminDecorator implements Downloadable
+class OrderDecorator extends BulkAdminDecorator implements Downloadable
 {
 	private $orderStates;
 
@@ -105,4 +105,17 @@ class OrderDecorator extends ModelAdminDecorator implements Downloadable
 			new TextField(array('name' => 'customer_email', 'disabled' => true))
 		];
 	}
+
+    /**
+     * Return the fields displayed on a bulk create/edit screen
+     *
+     * @param  $instances
+     * @return array
+     */
+    public function getBulkFields($instances)
+    {
+        return [
+            new SelectField(['name' => 'state', 'label' => 'Order State', 'options' => $this->getStateOptions()]),
+        ];
+    }
 }
