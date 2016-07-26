@@ -40,7 +40,7 @@ class OrderController extends BulkAdminController
 			$this->actions->custom(
 				new Form(
 					$this->getActionName('bulkEdit'),
-					'Bulk Update',
+					'Bulk Edit',
 					'fa fa-pencil',
 					['class' => 'btn-info'],
 					['class' => 'pull-right space-left js-bulk-update']
