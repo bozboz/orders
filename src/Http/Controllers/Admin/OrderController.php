@@ -106,4 +106,24 @@ class OrderController extends BulkAdminController
 		$report = new CSVReport($this->decorator);
 		return $report->render();
 	}
+
+    public function viewPermissions($stack)
+    {
+        $stack->add('ecommerce');
+    }
+
+    public function createPermissions($stack, $instance)
+    {
+        $stack->add('ecommerce', $instance);
+    }
+
+    public function editPermissions($stack, $instance)
+    {
+        $stack->add('ecommerce', $instance);
+    }
+
+    public function deletePermissions($stack, $instance)
+    {
+        $stack->add('ecommerce', $instance);
+    }
 }
