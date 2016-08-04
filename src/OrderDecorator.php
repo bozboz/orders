@@ -87,7 +87,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 		];
 	}
 
-	protected function getStateOptions($hiddenStates)
+	protected function getStateOptions($hiddenStates = [])
 	{
 		$states = $this->model->getStateMachine()->getStates();
 
