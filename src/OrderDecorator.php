@@ -65,9 +65,16 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 
 	public function getListingFilters()
 	{
+		$hiddenStates = $this->model->getStateMachine()->findStateWithProperty('show_in_default_filter', false);
 		return [
 			new DateFilter,
-			new ArrayListingFilter('state', $this->getStateOptions()),
+			new ArrayListingFilter('state', $this->getStateOptions($hiddenStates), function($query, $value) use ($hiddenStates) {
+				if ($value == 'all') {
+					$query->whereNotIn('state', $hiddenStates);
+				} else {
+					$query->where('state', $value);
+				}
+			}, 'all'),
 			new SearchListingFilter('customer', [], function($q, $value) {
 				foreach(explode(' ', $value) as $part) {
 					$q->where(function($q) use ($part) {
@@ -80,11 +87,11 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 		];
 	}
 
-	protected function getStateOptions()
+	protected function getStateOptions($hiddenStates)
 	{
 		$states = $this->model->getStateMachine()->getStates();
 
-		return [null => 'All'] + array_combine($states, $states);
+		return ['all' => 'All' . (count($hiddenStates) ? ' (except ' . implode(', ', $hiddenStates) . ')' : null)] + array_combine($states, $states);
 	}
 
 	public function getLabel($model)
