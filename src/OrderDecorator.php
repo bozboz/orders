@@ -67,7 +67,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	{
 		$hiddenStates = $this->model->getStateMachine()->findStateWithProperty('show_in_default_filter', false);
 		return [
-			new DateFilter,
+			new DateFilter('created_at'),
 			new ArrayListingFilter('state', $this->getStateOptions($hiddenStates), function($query, $value) use ($hiddenStates) {
 				if ($value == 'all') {
 					$query->whereNotIn('state', $hiddenStates);
