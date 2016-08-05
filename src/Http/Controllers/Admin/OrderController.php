@@ -42,7 +42,7 @@ class OrderController extends BulkAdminController
 					$this->getActionName('bulkEdit'),
 					'Bulk Edit',
 					'fa fa-pencil',
-					['class' => 'btn-info'],
+					['class' => 'btn-info btn-sm'],
 					['class' => 'pull-right space-left js-bulk-update']
 				),
 				new IsValid([$this, 'canView'])

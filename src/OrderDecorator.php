@@ -31,7 +31,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	public function getColumns($order)
 	{
 		return array(
-			'ID' => sprintf('<strong class="id">#%s</strong>', str_pad($order->id, 3, '0', STR_PAD_LEFT)),
+			'Order Number' => sprintf('<strong class="id">%s</strong>', $order->transaction_id),
 			'Customer' => $order->customer_first_name . ' ' . $order->customer_last_name,
 			'Country' => $order->billingAddress ? $order->billingAddress->country : '-',
 			'Date' => $order->created_at,
@@ -75,10 +75,10 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 					$query->where('state', $value);
 				}
 			}, 'all'),
-			new SearchListingFilter('customer', [], function($q, $value) {
+			new SearchListingFilter('customer', function($q, $value) {
 				foreach(explode(' ', $value) as $part) {
 					$q->where(function($q) use ($part) {
-						foreach(['customer_first_name', 'customer_last_name', 'customer_email'] as $attr) {
+						foreach(['transaction_id', 'customer_first_name', 'customer_last_name', 'customer_email'] as $attr) {
 							$q->orWhere($attr, 'LIKE', "%$part%");
 						}
 					});
@@ -106,6 +106,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	public function getFields($instance)
 	{
 		return [
+			new TextField(array('name' => 'transaction_id', 'disabled' => true)),
 			new SelectField(array('name' => 'state', 'label' => 'Order State', 'options' => $this->getStateOptions())),
 			new TextField(array('name' => 'customer_first_name', 'disabled' => true)),
 			new TextField(array('name' => 'customer_last_name', 'disabled' => true)),
