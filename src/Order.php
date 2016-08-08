@@ -31,6 +31,7 @@ class Order extends Model implements StatefulInterface
 		'customer_phone',
 		'company',
 		'state',
+		'state_transition',
 	];
 
 	public function __construct($attributes = [])
@@ -114,6 +115,13 @@ class Order extends Model implements StatefulInterface
 	public function canTransition($transition)
 	{
 		return $this->stateMachine->can($transition);
+	}
+
+	public function setStateTransitionAttribute($transition)
+	{
+		if ($transition) {
+			$this->transitionState($transition);
+		}
 	}
 
 	public function isComplete()

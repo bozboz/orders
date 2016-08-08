@@ -94,6 +94,16 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 		return ['all' => 'All' . (count($hiddenStates) ? ' (except ' . implode(', ', $hiddenStates) . ')' : null)] + array_combine($states, $states);
 	}
 
+	protected function getAvailableStateOptions($order)
+	{
+		$transitions = $this->getStateTransitions()->toArray();
+		return collect(array_combine($transitions, $transitions))->map(function($item) use ($order) {
+			if ($order->getStateMachine()->can($item)) {
+				return ucwords($item);
+			}
+		})->filter();
+	}
+
 	public function getLabel($model)
 	{
 		return sprintf('Order by %s %s on %s',
@@ -107,23 +117,26 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	{
 		return [
 			new TextField(array('name' => 'transaction_id', 'disabled' => true)),
-			new SelectField(array('name' => 'state', 'label' => 'Order State', 'options' => $this->getStateOptions())),
+			new SelectField(array('name' => 'state_transition', 'label' => 'Order State', 'options' => $this->getAvailableStateOptions($instance)->prepend($instance->state))),
 			new TextField(array('name' => 'customer_first_name', 'disabled' => true)),
 			new TextField(array('name' => 'customer_last_name', 'disabled' => true)),
 			new TextField(array('name' => 'customer_email', 'disabled' => true))
 		];
 	}
 
-    /**
-     * Return the fields displayed on a bulk create/edit screen
-     *
-     * @param  $instances
-     * @return array
-     */
-    public function getBulkFields($instances)
-    {
-        return [
-            new SelectField(['name' => 'state', 'label' => 'Order State', 'options' => $this->getStateOptions()]),
-        ];
-    }
+	/**
+	 * Return the fields displayed on a bulk create/edit screen
+	 *
+	 * @param  $instances
+	 * @return array
+	 */
+	public function getBulkFields($instances)
+	{
+		$options = ['' => '- Please Select -'] + call_user_func_array('array_intersect', $instances->map(function($order) {
+			return $this->getAvailableStateOptions($order)->toArray();
+		})->toArray());
+		return [
+			new SelectField(['name' => 'state_transition', 'label' => 'Order State', 'options' => $options]),
+		];
+	}
 }
