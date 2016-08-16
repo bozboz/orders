@@ -7,12 +7,14 @@ use Bozboz\Admin\Reports\Downloadable;
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
 use Bozboz\Ecommerce\Orders\Customers\Customer;
 use Bozboz\Ecommerce\Orders\Events\OrderComplete;
+use Bozboz\Ecommerce\Orders\Events\OrderStateTransition;
 use Bozboz\Ecommerce\Orders\OrderStateException;
 use Exception;
 use Finite\Loader\ArrayLoader;
 use Finite\StateMachine\StateMachine;
 use Finite\StatefulInterface;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Event;
 
 class Order extends Model implements StatefulInterface
 {
@@ -44,7 +46,7 @@ class Order extends Model implements StatefulInterface
 	{
 		parent::boot();
 
-		\Event::listen('Bozboz\Ecommerce\Orders\Events\OrderStateTransition', function($event) {
+		Event::listen('Bozboz\Ecommerce\Orders\Events\OrderStateTransition', function($event) {
 			app('Bozboz\Ecommerce\Orders\Listeners\Notify')->handle($event);
 		});
 	}
@@ -110,6 +112,8 @@ class Order extends Model implements StatefulInterface
 		$this->stateMachine->apply($transition);
 		$this->attributes['state'] = $this->getFiniteState();
 		$this->save();
+
+		Event::fire(new OrderStateTransition($this, $transition));
 	}
 
 	public function canTransition($transition)

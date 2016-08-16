@@ -74,7 +74,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 				} else {
 					$query->where('state', $value);
 				}
-			}, 'all'),
+			}, $this->getDefaultStatusFilter()),
 			new SearchListingFilter('customer', function($q, $value) {
 				foreach(explode(' ', $value) as $part) {
 					$q->where(function($q) use ($part) {
@@ -85,6 +85,11 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 				}
 			})
 		];
+	}
+
+	protected function getDefaultStatusFilter()
+	{
+		return 'all';
 	}
 
 	protected function getStateOptions($hiddenStates = [])

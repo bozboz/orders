@@ -64,8 +64,6 @@ class OrderController extends BulkAdminController
 		$instance = $this->decorator->findInstance($id);
 		$instance->transitionState($transition);
 
-		\Event::fire(new OrderStateTransition($instance, $transition));
-
 		return $this->getUpdateResponse($instance)->with('model.updated', sprintf(
 			'Successfully updated "%s"',
 			$this->decorator->getLabel($instance)
