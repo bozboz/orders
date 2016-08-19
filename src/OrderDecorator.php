@@ -137,9 +137,14 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	 */
 	public function getBulkFields($instances)
 	{
-		$options = ['' => '- Please Select -'] + call_user_func_array('array_intersect', $instances->map(function($order) {
-			return $this->getAvailableStateOptions($order)->toArray();
-		})->toArray());
+		if ($instances->count() > 1) {
+			$options = ['' => '- Please Select -'] + call_user_func_array('array_intersect', $instances->map(function($order) {
+				return $this->getAvailableStateOptions($order)->toArray();
+			})->toArray());
+		} else {
+			$options = $this->getAvailableStateOptions($instances->first());
+		}
+
 		return [
 			new SelectField(['name' => 'state_transition', 'label' => 'Order State', 'options' => $options]),
 		];
