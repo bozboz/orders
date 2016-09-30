@@ -2,18 +2,18 @@
 
 namespace Bozboz\Ecommerce\Orders\Customers;
 
-use Illuminate\Database\Eloquent\Builder;
-
-use Bozboz\Admin\Users\UserAdminDecorator;
-use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\EmailField;
+use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Reports\Filters\SearchListingFilter;
+use Bozboz\Admin\Users\RoleAdminDecorator;
+use Bozboz\Admin\Users\UserAdminDecorator;
+use Illuminate\Database\Eloquent\Builder;
 
 class CustomerAdminDecorator extends UserAdminDecorator
 {
-	public function __construct(Customer $customer)
+	public function __construct(Customer $customer, RoleAdminDecorator $roles)
 	{
-		parent::__construct($customer);
+		parent::__construct($customer, $roles);
 	}
 
 	public function modifyListingQuery(Builder $query)
