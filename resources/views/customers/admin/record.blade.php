@@ -1,4 +1,4 @@
-@extends('admin::form')
+@extends('admin::edit')
 
 @section('heading', 'Customer ' . $model->name)
 
@@ -47,7 +47,7 @@
 					<td>{{ HTML::linkRoute('admin.orders.edit', '#' . $order->id, [$order->id]) }}</td>
 					<td>
 						@foreach($order->items as $item)
-							{{ $item->name }}
+							{!! $item->name !!}<br>
 						@endforeach
 					</td>
 					<td>{{ format_money($order->totalPrice()) }}</td>

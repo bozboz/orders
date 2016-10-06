@@ -17,4 +17,9 @@ class Customer extends User
 	{
 		return $this->hasMany(Order::class, 'user_id');
 	}
+
+    public function getValidator()
+    {
+        return new CustomerValidator;
+    }
 }

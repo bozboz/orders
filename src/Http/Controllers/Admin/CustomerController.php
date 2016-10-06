@@ -9,6 +9,7 @@ use Bozboz\Ecommerce\Orders\Customers\CustomerAdminDecorator;
 
 class CustomerController extends ModelAdminController
 {
+    protected $useActions = true;
 	protected $editView = 'orders::customers.admin.record';
 
 	public function __construct(CustomerAdminDecorator $decorator)

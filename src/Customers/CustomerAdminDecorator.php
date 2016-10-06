@@ -59,6 +59,7 @@ class CustomerAdminDecorator extends UserAdminDecorator
 			new TextField('first_name'),
 			new TextField('last_name'),
 			new EmailField('email'),
+			$this->getPasswordFieldForUser($inst),
 		];
 	}
 }
