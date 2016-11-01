@@ -103,7 +103,7 @@ class CustomerService
 			'password' => 'required|confirmed'
 		], [
 			'customer_email.required' => 'Please provide your email address',
-			'customer_email.unique' => 'Email address is already used. Click <a class="js-account-btn" href="/account/login">here</a> to login',
+			'customer_email.unique' => 'Email address is already used. Click <a class="js-account-btn" href="' . route('checkout.login') . '">here</a> to login',
 			'password.required' => 'Please enter a password'
 		]);
 
