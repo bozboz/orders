@@ -58,7 +58,7 @@ class CustomerService
 			'customer_first_name.required' => 'Please provide your first name',
 			'customer_last_name.required' => 'Please provide your last name',
 			'customer_email.required' => 'Please provide your email address',
-			'customer_email.unique' => 'Email address is already used. Click <a class="js-account-btn" href="/account/login">here</a> to login',
+			'customer_email.unique' => 'Email address is already used. Click <a class="js-account-btn" href="' . route('checkout.login') . '">here</a> to login',
 			'terms_and_conditions.required' => 'Please agree to our terms and conditions'
 		]);
 
