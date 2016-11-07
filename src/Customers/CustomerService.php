@@ -68,6 +68,27 @@ class CustomerService
 	}
 
 	/**
+	 * Populate a given order with the credentials from the given user
+	 *
+	 * @param  Bozboz\Ecommerce\Orders\Order  $order
+	 * @param  Bozboz\Admin\Users\UserInterface  $user
+	 * @return void
+	 */
+	public function populateOrderFromCustomer(Order $order, UserInterface $user)
+	{
+		$mapping = [
+			'customer_first_name' => 'first_name',
+			'customer_last_name' => 'last_name',
+			'customer_email' => 'email',
+			'customer_phone' => 'phone',
+		];
+
+		foreach ($mapping as $orderProp => $userProp) {
+			$order->$orderProp = $order->$orderProp ?: $user->$userProp;
+		}
+	}
+
+	/**
 	 * Create or update user info from $order and assign to $order
 	 *
 	 * @param  mixed  $authUser
