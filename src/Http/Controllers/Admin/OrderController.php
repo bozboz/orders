@@ -105,22 +105,22 @@ class OrderController extends BulkAdminController
 		return $report->render();
 	}
 
-    public function viewPermissions($stack)
+    protected function viewPermissions($stack)
     {
         $stack->add('ecommerce');
     }
 
-    public function createPermissions($stack, $instance)
+    protected function createPermissions($stack, $instance)
     {
         $stack->add('ecommerce', $instance);
     }
 
-    public function editPermissions($stack, $instance)
+    protected function editPermissions($stack, $instance)
     {
         $stack->add('ecommerce', $instance);
     }
 
-    public function deletePermissions($stack, $instance)
+    protected function deletePermissions($stack, $instance)
     {
         $stack->add('ecommerce', $instance);
     }
