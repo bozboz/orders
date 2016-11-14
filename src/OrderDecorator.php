@@ -35,7 +35,8 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 			'Customer' => $order->customer_first_name . ' ' . $order->customer_last_name,
 			'Country' => $order->billingAddress ? $order->billingAddress->country : '-',
 			'Date' => $order->created_at,
-			'Total' => format_money($order->totalPrice())
+			'Total' => format_money($order->totalPrice()),
+			'Status' => $order->state,
 		);
 	}
 
@@ -52,7 +53,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 			'customer' => $order->customer_first_name . ' ' . $order->customer_last_name,
 			'country' => $order->billingAddress ? $order->billingAddress->country : '-',
 			'date' => $order->created_at,
-			'total' => format_money($order->totalPrice())
+			'total' => format_money($order->totalPrice()),
 		];
 	}
 
@@ -69,10 +70,17 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 		return [
 			new DateFilter('created_at'),
 			new ArrayListingFilter('state', $this->getStateOptions($hiddenStates), function($query, $value) use ($hiddenStates) {
-				if ($value == 'all') {
-					$query->whereNotIn('state', $hiddenStates);
-				} else {
-					$query->where('state', $value);
+				switch ($value) {
+					case 'all':
+						// do nothing
+					break;
+
+					case 'all-except':
+						$query->whereNotIn('state', $hiddenStates);
+					break;
+
+					default:
+						$query->where('state', $value);
 				}
 			}, $this->getDefaultStatusFilter()),
 			new SearchListingFilter('customer', function($q, $value) {
@@ -96,7 +104,10 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	{
 		$states = $this->model->getStateMachine()->getStates();
 
-		return ['all' => 'All' . (count($hiddenStates) ? ' (except ' . implode(', ', $hiddenStates) . ')' : null)] + array_combine($states, $states);
+		return [
+			'all' => 'All',
+			'all-except' => 'All' . (count($hiddenStates) ? ' (except ' . implode(', ', $hiddenStates) . ')' : null)
+		] + array_combine($states, $states);
 	}
 
 	protected function getAvailableStateOptions($order)
