@@ -10,9 +10,9 @@ class Address extends Model
 	protected $guarded = ['id', 'created_at', 'updated_at'];
 	protected $hidden = ['created_at', 'updated_at', 'pivot'];
 
-	public function customers()
+	public function customer()
 	{
-		return $this->belongsToMany(Customer::class);
+		return $this->belongsTo(Customer::class);
 	}
 
 	public function parts()

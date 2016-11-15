@@ -10,7 +10,7 @@ class Customer extends User
 {
 	public function addresses()
 	{
-		return $this->belongsToMany(Address::class)->withTimestamps();
+		return $this->hasMany(Address::class);
 	}
 
 	public function orders()

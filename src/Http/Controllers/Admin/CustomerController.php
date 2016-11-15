@@ -37,7 +37,7 @@ class CustomerController extends ModelAdminController
 
 		$address = $customer->addresses()->where('address_id', $address)->firstOrFail();
 
-		$customer->addresses()->detach($address);
+		$address->customer()->dissociate();
 
 		$customer->addresses()->create(Input::except('after_save'));
 
