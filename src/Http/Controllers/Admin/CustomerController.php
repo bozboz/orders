@@ -35,7 +35,7 @@ class CustomerController extends ModelAdminController
 	{
 		$customer = $this->decorator->findInstance($customer);
 
-		$address = $customer->addresses()->where('address_id', $address)->firstOrFail();
+		$address = $customer->addresses()->where('id', $address)->firstOrFail();
 
 		$address->customer()->dissociate();
 

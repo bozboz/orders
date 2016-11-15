@@ -42,7 +42,7 @@ class LinkAddressToCustomer
 	protected function addAddressToCustomer(Customer $customer, Address $address)
 	{
 		if ( ! $customer->addresses->contains($address)) {
-			$customer->addresses()->attach($address);
+			$address->customer()->associate($customer)->save();
 		}
 	}
 }
