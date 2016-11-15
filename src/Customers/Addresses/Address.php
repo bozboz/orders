@@ -2,8 +2,9 @@
 
 namespace Bozboz\Ecommerce\Orders\Customers\Addresses;
 
+use App\Ecommerce\Orders\Order;
+use Bozboz\Admin\Base\Model;
 use Bozboz\Ecommerce\Orders\Customers\Customer;
-use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
@@ -13,6 +14,11 @@ class Address extends Model
 	public function customer()
 	{
 		return $this->belongsTo(Customer::class);
+	}
+
+	public function orders()
+	{
+		return $this->hasMany(Order::class, 'billing_address_id')->orWhere('shipping_address_id', $this->id);
 	}
 
 	public function parts()
