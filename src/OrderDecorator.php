@@ -36,7 +36,6 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 			'Country' => $order->billingAddress ? $order->billingAddress->country : '-',
 			'Date' => $order->created_at,
 			'Total' => format_money($order->totalPrice()),
-			'Status' => $order->state,
 		);
 	}
 

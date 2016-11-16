@@ -78,7 +78,7 @@ class OrderController extends BulkAdminController
 				$items->map(function($item) {
 					return $this->actions->custom(
 						new Form([$this->getActionName('transitionState'), ['transition' => $item]], ucwords($item)),
-						new CanTransition([$this, 'canEdit'], $item)
+						new CanTransition([$this, 'canTransition'], $item)
 					);
 				})
 			),
@@ -103,6 +103,11 @@ class OrderController extends BulkAdminController
 	{
 		$report = new CSVReport($this->decorator);
 		return $report->render();
+	}
+
+	public function canTransition($instance)
+	{
+        return ! $instance->getStateMachine()->getCurrentState()->has('disallow_manual_transition') && parent::canEdit($instance);
 	}
 
     protected function viewPermissions($stack)
