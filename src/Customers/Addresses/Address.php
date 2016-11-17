@@ -9,7 +9,7 @@ use Bozboz\Ecommerce\Orders\Customers\Customer;
 class Address extends Model
 {
 	protected $guarded = ['id', 'created_at', 'updated_at'];
-	protected $hidden = ['created_at', 'updated_at', 'pivot'];
+	protected $hidden = ['created_at', 'updated_at', 'customer_id'];
 
 	public function customer()
 	{
