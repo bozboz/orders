@@ -133,9 +133,9 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 		return [
 			new TextField(array('name' => 'transaction_id', 'disabled' => true)),
 			new SelectField(array('name' => 'state_transition', 'label' => 'Order State', 'options' => $this->getAvailableStateOptions($instance)->prepend($instance->state))),
-			new TextField(array('name' => 'customer_first_name', 'disabled' => true)),
-			new TextField(array('name' => 'customer_last_name', 'disabled' => true)),
-			new TextField(array('name' => 'customer_email', 'disabled' => true))
+			new TextField(array('name' => 'customer_first_name')),
+			new TextField(array('name' => 'customer_last_name')),
+			new TextField(array('name' => 'customer_email'))
 		];
 	}
 
