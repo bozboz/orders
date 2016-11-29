@@ -153,6 +153,11 @@ class Order extends Model implements StatefulInterface
 		return $this->belongsTo(Address::class);
 	}
 
+    public function getShippingCountryAttribute()
+    {
+        return $this->shippingAddress ? $this->shippingAddress->country : 'GB';
+    }
+
 	public function user()
 	{
 		return $this->belongsTo(Customer::class);
