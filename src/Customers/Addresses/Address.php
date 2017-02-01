@@ -10,6 +10,7 @@ class Address extends Model
 {
 	protected $guarded = ['id', 'created_at', 'updated_at'];
 	protected $hidden = ['created_at', 'updated_at', 'customer_id'];
+	protected $nullable = ['customer_id'];
 
 	public function customer()
 	{
