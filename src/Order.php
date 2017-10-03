@@ -373,7 +373,12 @@ class Order extends Model implements StatefulInterface
 	 */
 	public function generateTransactionId()
 	{
-		$this->transaction_id = time();
+		do {
+			$transaction_id = generate_random_alphanumeric_string(4) . '-' . generate_random_alphanumeric_string(4);
+			$unique = empty($this->whereRaw('BINARY `transaction_id` = ?', [$transaction_id])->first()); //Case sensitive lookup
+		} while ( ! $unique);
+
+		$this->transaction_id = $transaction_id;
 	}
 
 	/**
