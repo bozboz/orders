@@ -9,7 +9,7 @@ use Bozboz\Admin\Reports\Downloadable;
 use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
 use Bozboz\Admin\Reports\Filters\RelationFilter;
 use Bozboz\Admin\Reports\Filters\SearchListingFilter;
-use Bozboz\Ecommerce\Orders\ListingFilters\DateFilter;
+use Bozboz\Admin\Reports\Filters\DateFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrderDecorator extends BulkAdminDecorator implements Downloadable
