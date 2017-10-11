@@ -13,7 +13,7 @@ if (!function_exists('generate_random_alphanumeric_string')) {
     {
         $string = '';
         //Alphanumeric characters, with similar looking characters excluded
-        $characters = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
+        $characters = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
         $characterCount = strlen($characters);
         for ($i = 0; $i < $stringLength; $i++) {
             $stringIndex  = mt_rand(0, $characterCount - 1);

@@ -28,12 +28,15 @@ class Notify
 
             $this->mailer->send($this->getView($event->transition), $data, function($message) use ($order)
             {
-                $message->from('noreply@finecut.co.uk');
+                $message->from(
+                    $this->config->get('ecommerce.order_email_from.address', $this->config->get('mail.from.address')),
+                    $this->config->get('ecommerce.order_email_from.name', $this->config->get('mail.from.name'))
+                );
                 $message->to($order->customer_email);
-                if ($this->config->get('app.order_cc_email_address')) {
-                    $message->bcc($this->config->get('app.order_cc_email_address'));
+                if ($this->config->get('ecommerce.order_cc_email_address')) {
+                    $message->bcc($this->config->get('ecommerce.order_cc_email_address'));
                 }
-                $message->subject(sprintf('%s - Your Order', $this->config->get('app.client_name')));
+                $message->subject(sprintf('%s - Your Order', $this->config->get('ecommerce.client_name', $this->config->get('app.url'))));
             });
         }
     }

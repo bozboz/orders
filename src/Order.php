@@ -261,7 +261,7 @@ class Order extends Model implements StatefulInterface
 		$item->name = $orderable->label();
 		$item->total_weight = $orderable->calculateWeight($quantity);
 		$item->quantity = $quantity;
-		// $item->image = $orderable->image();
+		$item->image = $orderable->image();
 		$item->tax_rate = $this->isTaxable() && $orderable->isTaxable() ? 0.2 : 0;
 		$item->calculateNet($orderable, $this);
 		$item->calculateGross();
