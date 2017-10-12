@@ -63,6 +63,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	{
 		$query
 			->with('billingAddress', 'items')
+			->has('relatedOrders', '=', 0)
 			->latest();
 	}
 
