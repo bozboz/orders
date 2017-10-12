@@ -2,23 +2,25 @@
 
 namespace Bozboz\Ecommerce\Orders\Http\Controllers\Admin;
 
-use Bozboz\Admin\Http\Controllers\BulkAdminController;
-use Bozboz\Admin\Reports\Actions\Action;
-use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
-use Bozboz\Admin\Reports\Actions\Presenters\Form;
-use Bozboz\Admin\Reports\Actions\Presenters\Link;
-use Bozboz\Admin\Reports\CSVReport;
 use Bozboz\Admin\Reports\Report;
-use Bozboz\Ecommerce\Orders\Actions\Permissions\CanTransition;
-use Bozboz\Ecommerce\Orders\Events\OrderStateTransition;
-use Bozboz\Ecommerce\Orders\OrderDecorator;
+use Bozboz\Admin\Reports\CSVReport;
 use Bozboz\Ecommerce\Orders\Refund;
-use Bozboz\Ecommerce\Payment\Exception as PaymentException;
-use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\App;
+use Bozboz\Permissions\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Input;
+use Bozboz\Admin\Reports\Actions\Action;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
+use Bozboz\Ecommerce\Orders\OrderDecorator;
+use Illuminate\Contracts\Events\Dispatcher;
+use Bozboz\Admin\Reports\Actions\Presenters\Form;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Http\Controllers\BulkAdminController;
+use Bozboz\Ecommerce\Orders\Events\OrderStateTransition;
+use Bozboz\Ecommerce\Payment\Exception as PaymentException;
+use Bozboz\Ecommerce\Orders\Actions\Permissions\CanTransition;
 
 class OrderController extends BulkAdminController
 {
@@ -59,6 +61,12 @@ class OrderController extends BulkAdminController
 		];
 	}
 
+	protected function renderFormFor($instance, $view, $method, $action)
+	{
+		return parent::renderFormFor($instance, $view, $method, $action)
+			->with(['canRefund' => $this->canRefund($instance)]);
+	}
+
 	public function transitionState(Dispatcher $event, $id, $transition)
 	{
 		$instance = $this->decorator->findInstance($id);
@@ -90,6 +98,8 @@ class OrderController extends BulkAdminController
 		$order = $this->decorator->findInstance($orderId);
 		$errors = [];
 
+		if ( ! $this->canRefund($order)) return App::abort(403);
+
 		try {
 			$this->refund->process($order, Input::get('items'));
 		} catch (PaymentException $e) {
@@ -107,7 +117,12 @@ class OrderController extends BulkAdminController
 
 	public function canTransition($instance)
 	{
-        return ! $instance->getStateMachine()->getCurrentState()->has('disallow_manual_transition') && parent::canEdit($instance);
+        return ! $instance->getStateMachine()->getCurrentState()->has('disallow_manual_transition') && $this->canEdit($instance);
+	}
+
+	public function canRefund($instance)
+	{
+		return $this->canEdit($instance) && $instance->relatedOrders->isEmpty() && $instance->state !== 'Refunded';
 	}
 
     protected function viewPermissions($stack)

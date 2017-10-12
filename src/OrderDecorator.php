@@ -34,7 +34,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 			'Order Number' => sprintf('<strong class="id">%s</strong>', $order->transaction_id),
 			'Customer' => $order->customer_first_name . ' ' . $order->customer_last_name,
 			'Country' => $order->billingAddress ? $order->billingAddress->country : '-',
-			'Date' => $order->created_at,
+			'Purchase Date' => $order->created_at->format('d/m/Y H:i'),
 			'Total' => format_money($order->totalPrice()),
 		);
 	}
@@ -42,7 +42,10 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	public function getStateTransitions()
 	{
 		$stateMachine = $this->model->getStateMachine();
-		return collect($stateMachine->getTransitions());
+		$disallowedStates = collect($stateMachine->findStateWithProperty('disallow_manual_transition', true));
+		return collect($stateMachine->getTransitions())->filter(function($transition) use ($stateMachine, $disallowedStates) {
+			return ! $disallowedStates->contains($stateMachine->getTransition($transition)->getState());
+		});
 	}
 
 	public function getColumnsForCSV($order)
@@ -131,11 +134,11 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	public function getFields($instance)
 	{
 		return [
-			new TextField(array('name' => 'transaction_id', 'disabled' => true)),
-			new SelectField(array('name' => 'state_transition', 'label' => 'Order State', 'options' => $this->getAvailableStateOptions($instance)->prepend($instance->state))),
-			new TextField(array('name' => 'customer_first_name')),
-			new TextField(array('name' => 'customer_last_name')),
-			new TextField(array('name' => 'customer_email'))
+			new TextField(['name' => 'transaction_id', 'disabled' => true]),
+			new SelectField(['name' => 'state_transition', 'label' => 'Order State', 'options' => $this->getAvailableStateOptions($instance)->prepend($instance->state)]),
+			new TextField('customer_first_name'),
+			new TextField('customer_last_name'),
+			new TextField('customer_email'),
 		];
 	}
 

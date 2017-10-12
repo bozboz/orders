@@ -114,6 +114,7 @@ class Order extends Model implements StatefulInterface
 		$this->save();
 
 		Event::fire(new OrderStateTransition($this, $transition));
+		Event::fire('order.transition.'.$transition, $this);
 	}
 
 	public function canTransition($transition)

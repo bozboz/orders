@@ -18,7 +18,7 @@ class CustomerAdminDecorator extends UserAdminDecorator
 
 	public function modifyListingQuery(Builder $query)
 	{
-		$query->where('is_admin', false)->with('orders')->latest();
+		$query->has('orders')->with('orders')->latest();
 	}
 
 	public function getColumns($inst)

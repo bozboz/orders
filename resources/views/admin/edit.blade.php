@@ -49,7 +49,9 @@
 					<td align="right">Quantity</td>
 					<td align="right">Net Amount</td>
 					<td align="right">Total</td>
-					<td align="right">Refund</td>
+					@if ($canRefund)
+						<td align="right">Refund</td>
+					@endif
 				</tr>
 			</thead>
 			<tfoot>
@@ -58,15 +60,19 @@
 					<td align="right">{{ $model->totalQuantity() }}</td>
 					<td align="right">{{ format_money($model->subTotal()) }}</td>
 					<td align="right">{{ format_money($model->totalPrice()) }}</td>
-					<td align="right"></td>
+					@if ($canRefund)
+						<td align="right"></td>
+					@endif
 				</tr>
 				<tr>
 					<td colspan="5">
 						{{ $errors->first('refund', '<p><strong>:message</strong></p>') }}
 					</td>
-					<td align="right">
-						{{ Form::submit('Refund', ['class' => 'btn pull-right btn-danger space-left']) }}
-					</td>
+					@if ($canRefund)
+						<td align="right">
+							{{ Form::submit('Refund', ['class' => 'btn pull-right btn-danger space-left']) }}
+						</td>
+					@endif
 				</tr>
 			</tfoot>
 			<tbody>
@@ -86,9 +92,11 @@
 					<td class="summary-detail checkout-quantity" align="right">{{ $item->quantity }}</td>
 					<td class="summary-detail checkout-quantity" align="right">{{ format_money($item->total_price_pence_ex_vat) }}</td>
 					<td class="summary-detail price" align="right">{{ format_money($item->total_price_pence) }}</td>
-					<td align="right">{{ Form::text('items[' . $item->id . ']', $item->quantity, [
-						'style' => 'width: 30px; text-align: center'
-					]) }}</td>
+					@if ($canRefund)
+						<td align="right">{{ Form::text('items[' . $item->id . ']', $item->quantity, [
+							'style' => 'width: 30px; text-align: center'
+						]) }}</td>
+					@endif
 				</tr>
 			@endforeach
 			</body>
