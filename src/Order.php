@@ -306,7 +306,7 @@ class Order extends Model implements StatefulInterface
 	{
 		return $this->items()->where([
 			'orderable_id' => $orderable->id,
-			'orderable_type' => get_class($orderable)
+			'orderable_type' => $orderable->getMorphClass()
 		])->first();
 	}
 
