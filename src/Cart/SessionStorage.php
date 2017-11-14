@@ -19,6 +19,11 @@ class SessionStorage implements CartStorageInterface
 		return Cart::whereId($this->getIdentifier())->whereIn('state', ['Cart', 'Checkout'])->first();
 	}
 
+	protected function newCart()
+	{
+		return Cart::create();
+	}
+
 	public function getCartOrFail()
 	{
 		$cart = $this->getCart();
@@ -36,7 +41,7 @@ class SessionStorage implements CartStorageInterface
 		}
 
 		if ( ! $cart) {
-			$cart = Cart::create();
+			$cart = $this->newCart();;
 			$cart->save();
 
 			$this->session->put('cart', $cart->getKey());
