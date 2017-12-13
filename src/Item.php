@@ -71,7 +71,7 @@ class Item extends Model
 		$refundedItem->price_pence_ex_vat = $this->orderable->calculateAmountToRefund($this, 1);
 		$refundedItem->total_price_pence_ex_vat = -$this->orderable->calculateAmountToRefund($this, $refundedItem->quantity);
 
-		$refundedItem->calculateGross();
+		// $refundedItem->calculateGross();
 
 		return $refundedItem;
 	}

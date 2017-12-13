@@ -2,6 +2,7 @@
 
 namespace Bozboz\Ecommerce\Orders;
 
+use DB;
 use Bozboz\Ecommerce\Payment\Exception;
 use Bozboz\Ecommerce\Payment\GatewayFactory;
 use Bozboz\Ecommerce\Payment\PaymentGateway;
@@ -34,6 +35,8 @@ class Refund
 	 */
 	public function process(Order $order, array $itemQuantities = array())
 	{
+		DB::beginTransaction();
+
 		$gateway = $this->determinePaymentGateway($order);
 
 		$this->validateGateway($gateway);
@@ -56,6 +59,8 @@ class Refund
 		foreach($newOrder->items()->get() as $item) {
 			$this->events->fire('item.refunded: ' . $item->orderable_type, $item);
 		}
+
+		DB::commit();
 
 		return $newOrder;
 	}
