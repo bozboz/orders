@@ -101,7 +101,7 @@ class OrderController extends BulkAdminController
 		if ( ! $this->canRefund($order)) return App::abort(403);
 
 		try {
-			$this->refund->process($order, Input::get('items'));
+			$this->refund->process($order, Input::get('items'), Input::has('dummy-refund'));
 		} catch (PaymentException $e) {
 			$errors['refund'] = $e->getMessage();
 		}

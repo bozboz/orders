@@ -30,10 +30,11 @@ class Refund
 	 *
 	 * @param  Bozboz\Ecommerce\Order\Order  $order
 	 * @param  array  $itemQuantities
+	 * @param  boolean $dummy
 	 * @throws Bozboz\Ecommerce\Payment\Exception
 	 * @return Bozboz\Ecommerce\Order\Order
 	 */
-	public function process(Order $order, array $itemQuantities = array())
+	public function process(Order $order, array $itemQuantities = array(), $dummy = false)
 	{
 		DB::beginTransaction();
 
@@ -43,15 +44,17 @@ class Refund
 
 		$newOrder = $this->generateRefundedOrder($order, $itemQuantities);
 
-		$response = $gateway->refund([
-			'transactionReference' => $order->payment_ref
-		], $newOrder);
+		if ( ! $dummy) {
+			$response = $gateway->refund([
+				'transactionReference' => $order->payment_ref
+			], $newOrder);
 
-		if ( ! $response->isSuccessful()) {
-			$newOrder->delete();
-			$msg = 'Error Refunding Order #' . $order->id;
-			$this->logger->error($msg . ': ' . $response->getMessage());
-			throw new Exception($msg);
+			if ( ! $response->isSuccessful()) {
+				$newOrder->delete();
+				$msg = 'Error Refunding Order #' . $order->id;
+				$this->logger->error($msg . ': ' . $response->getMessage());
+				throw new Exception($msg);
+			}
 		}
 
 		$newOrder->transitionState('refund');
