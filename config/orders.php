@@ -8,13 +8,15 @@ return [
             'Successful' => ['type' => 'final',   'properties' => ['user_complete' => true]],
             'Failed'  => ['type' => 'final',   'properties' => ['user_complete' => true]],
             'Pending'  => ['type' => 'final',   'properties' => ['user_complete' => true]],
+            'Refunded'   => ['type' => 'final',   'properties' => ['user_complete' => true, 'disallow_manual_transition' => true]],
         ],
         'transitions' => [
-            'checkout' => ['from' => ['Cart', 'Checkout'],    'to' => 'Checkout'],
-            'cart' => ['from' => ['Checkout'],    'to' => 'Cart'],
-            'sucess'  => ['from' => ['Checkout'], 'to' => 'Successful'],
-            'fail'  => ['from' => ['Checkout'], 'to' => 'Failed'],
-            'pending'  => ['from' => ['Checkout'], 'to' => 'Pending'],
+            'checkout' => ['from' => ['Cart', 'Checkout'], 'to' => 'Checkout'],
+            'cart'     => ['from' => ['Checkout'],         'to' => 'Cart'],
+            'success'  => ['from' => ['Checkout'],         'to' => 'Successful'],
+            'fail'     => ['from' => ['Checkout'],         'to' => 'Failed'],
+            'pending'  => ['from' => ['Checkout'],         'to' => 'Pending'],
+            'refund'   => ['from' => ['Cart'],             'to' => 'Refunded'],
         ]
     ],
 ];
