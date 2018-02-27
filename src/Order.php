@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Event;
 class Order extends Model implements StatefulInterface
 {
 	use SoftDeletes;
+    use \Venturecraft\Revisionable\RevisionableTrait;
 
 	private $stateMachine;
 

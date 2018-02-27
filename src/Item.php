@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
 	protected $table = 'order_items';
 	protected $fillable = [
 		'name',

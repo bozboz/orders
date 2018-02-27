@@ -6,7 +6,8 @@
         }
     },
     "require": {
-        "yohang/finite": "^1.1"
+        "yohang/finite": "^1.1",
+        "venturecraft/revisionable": "^1.28"
     },
     "require-dev": {
         "phpunit/phpunit": "4.*"
