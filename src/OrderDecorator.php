@@ -63,7 +63,7 @@ class OrderDecorator extends BulkAdminDecorator implements Downloadable
 	{
 		$query
 			->with('billingAddress', 'items')
-			->has('relatedOrders', '=', 0)
+			// ->has('relatedOrders', '=', 0) // This was a way around showing orders which had been refunded elsewhere, but was having huge performance ramifications
 			->latest();
 	}
 
