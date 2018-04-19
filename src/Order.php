@@ -46,6 +46,10 @@ class Order extends Model implements StatefulInterface
 	{
 		parent::boot();
 
+		\Log::debug("Remove");
+		Event::forget('Bozboz\Ecommerce\Orders\Events\OrderStateTransition');
+
+		\Log::debug("Add");
 		Event::listen('Bozboz\Ecommerce\Orders\Events\OrderStateTransition', function($event) {
 			app('Bozboz\Ecommerce\Orders\Listeners\Notify')->handle($event);
 		});
