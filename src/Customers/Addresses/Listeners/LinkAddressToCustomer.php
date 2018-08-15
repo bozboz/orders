@@ -3,7 +3,7 @@
 namespace Bozboz\Ecommerce\Orders\Customers\Addresses\Listeners;
 
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
-use Bozboz\Ecommerce\Orders\Customers\Customer;
+use Bozboz\Ecommerce\Orders\Customers\CustomerInterface as Customer;
 use Bozboz\Ecommerce\Orders\Events\OrderComplete;
 
 class LinkAddressToCustomer

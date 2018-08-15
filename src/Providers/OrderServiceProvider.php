@@ -10,6 +10,10 @@ class OrderServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->app->bind(
+            'Bozboz\Ecommerce\Orders\Customers\CustomerInterface',
+            'Bozboz\Ecommerce\Orders\Customers\Customer'
+        );
     }
 
     public function boot()

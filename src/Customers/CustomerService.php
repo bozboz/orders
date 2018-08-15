@@ -8,6 +8,7 @@ use Bozboz\Ecommerce\Checkout\ValidationException;
 
 use Bozboz\Admin\Users\UserInterface;
 use Illuminate\Validation\Factory as Validator;
+use Bozboz\Ecommerce\Orders\Customers\CustomerInterface;
 
 class CustomerService
 {
@@ -17,7 +18,7 @@ class CustomerService
 	/**
 	 * @param Illuminate\Validation\Factory $validator
 	 */
-	public function __construct(Validator $validator, Customer $customer)
+	public function __construct(Validator $validator, CustomerInterface $customer)
 	{
 		$this->validator = $validator;
 		$this->customer = $customer;

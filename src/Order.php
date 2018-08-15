@@ -5,7 +5,7 @@ namespace Bozboz\Ecommerce\Orders;
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Reports\Downloadable;
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
-use Bozboz\Ecommerce\Orders\Customers\Customer;
+use Bozboz\Ecommerce\Orders\Customers\CustomerInterface as Customer;
 use Bozboz\Ecommerce\Orders\Events\OrderComplete;
 use Bozboz\Ecommerce\Orders\Events\OrderStateTransition;
 use Bozboz\Ecommerce\Orders\OrderStateException;
@@ -119,6 +119,7 @@ class Order extends Model implements StatefulInterface
 
 		Event::fire(new OrderStateTransition($this, $transition));
 		Event::fire('order.transition.'.$transition, $this);
+		\Log::debug ('order.transition.'.$transition);
 	}
 
 	public function canTransition($transition)
