@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CustomerAdminDecorator extends UserAdminDecorator
 {
-	public function __construct(Customer $customer, RoleAdminDecorator $roles)
+	public function __construct(CustomerInterface $customer, RoleAdminDecorator $roles)
 	{
 		parent::__construct($customer, $roles);
 	}
