@@ -9,3 +9,6 @@ Remove Benton fix.  Benton had an issue where order confirmation emails were
 being sent multiple times and a fix was put in Order to forget and readd the event.  
 However this broke confirmation emails for Drusillas. The Benton fix is now 
 removed from the main branch.
+
+## v1.0.2 (2018-08-24)
+Remove CustomerInterface changes.  Moved these to their own branch 'customer-interface'
