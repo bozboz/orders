@@ -6,7 +6,7 @@ use Bozboz\Admin\Users\User;
 use Bozboz\Ecommerce\Orders\Customers\Addresses\Address;
 use Bozboz\Ecommerce\Orders\Order;
 
-class Customer extends User implements CustomerInterface
+class Customer extends User
 {
 	public function addresses()
 	{

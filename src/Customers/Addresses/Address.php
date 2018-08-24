@@ -4,7 +4,7 @@ namespace Bozboz\Ecommerce\Orders\Customers\Addresses;
 
 use App\Ecommerce\Orders\Order;
 use Bozboz\Admin\Base\Model;
-use Bozboz\Ecommerce\Orders\Customers\CustomerInterface as Customer;
+use Bozboz\Ecommerce\Orders\Customers\Customer;
 
 class Address extends Model
 {
